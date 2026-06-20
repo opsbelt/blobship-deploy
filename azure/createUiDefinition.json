@@ -35,6 +35,17 @@
         "label": "Storage account",
         "elements": [
           {
+            "name": "principalId",
+            "type": "Microsoft.Common.TextBox",
+            "label": "BlobShip principal ID",
+            "toolTip": "Copy this from the BlobShip wizard (the grant step shows it). It is BlobShip's service-principal object id in your tenant.",
+            "constraints": {
+              "required": true,
+              "regex": "^[0-9a-fA-F-]{36}$",
+              "validationMessage": "Paste the GUID shown in the BlobShip grant step."
+            }
+          },
+          {
             "name": "storageAccount",
             "type": "Microsoft.Solutions.ResourceSelector",
             "label": "Storage account",
@@ -65,6 +76,7 @@
       }
     ],
     "outputs": {
+      "blobshipPrincipalId": "[steps('target').principalId]",
       "storageAccountResourceId": "[steps('target').storageAccount.id]",
       "containerName": "[steps('target').container]"
     }
