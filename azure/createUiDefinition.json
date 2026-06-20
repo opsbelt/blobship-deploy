@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "config": {
+      "isWizard": false,
+      "basics": {
+        "subscription": {
+          "constraints": {
+            "validations": [
+              {
+                "permission": "Microsoft.Authorization/roleAssignments/write",
+                "message": "You need Owner or User Access Administrator on this subscription to grant access."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "basics": [
+      {
+        "name": "intro",
+        "type": "Microsoft.Common.InfoBox",
+        "visible": true,
+        "options": {
+          "icon": "Info",
+          "text": "This grants BlobShip the **Storage Blob Data Contributor** role on the single storage account you choose — nothing else. No subscription-wide access, no account keys. Revoke anytime by deleting the role assignment."
+        }
+      }
+    ],
+    "steps": [
+      {
+        "name": "target",
+        "label": "Storage account",
+        "elements": [
+          {
+            "name": "storageAccount",
+            "type": "Microsoft.Solutions.ResourceSelector",
+            "label": "Storage account",
+            "toolTip": "The storage account BlobShip will broker uploads into.",
+            "resourceType": "Microsoft.Storage/storageAccounts",
+            "options": {
+              "filter": {
+                "subscription": "onBasics"
+              }
+            },
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "container",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Limit to one container (optional)",
+            "toolTip": "Leave blank to grant on the whole account, or name a single container to scope the grant even tighter.",
+            "placeholder": "e.g. uploads",
+            "constraints": {
+              "required": false,
+              "regex": "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$|^$",
+              "validationMessage": "Lowercase letters, numbers and hyphens; 3–63 chars. Leave blank for the whole account."
+            }
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "storageAccountResourceId": "[steps('target').storageAccount.id]",
+      "containerName": "[steps('target').container]"
+    }
+  }
+}
