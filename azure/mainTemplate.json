@@ -1,12 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "6774747891678820667"
+      "templateHash": "6709611643443364945"
     }
   },
   "parameters": {
@@ -14,7 +13,13 @@
       "type": "string",
       "defaultValue": "833cb164-4864-496a-985d-6bace547eacc",
       "metadata": {
-        "description": "BlobShip multitenant application (client) ID. Constant — pre-filled by BlobShip; do not change."
+        "description": "BlobShip app (client) ID — used only to make the role-assignment name stable."
+      }
+    },
+    "blobshipPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "Object id of the BlobShip service principal in THIS tenant. Pre-filled by BlobShip."
       }
     },
     "storageAccountResourceId": {
@@ -27,7 +32,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional: limit the grant to a single blob container. Leave empty to scope to the whole account."
+        "description": "Optional: limit the grant to a single blob container. Leave empty for the whole account."
       }
     }
   },
@@ -35,21 +40,8 @@
     "rgName": "[split(parameters('storageAccountResourceId'), '/')[4]]",
     "storageAccountName": "[last(split(parameters('storageAccountResourceId'), '/'))]"
   },
-  "imports": {
-    "microsoftGraph": {
-      "provider": "MicrosoftGraph",
-      "version": "0.1.8-preview"
-    }
-  },
-  "resources": {
-    "blobshipSp": {
-      "import": "microsoftGraph",
-      "type": "Microsoft.Graph/servicePrincipals@v1.0",
-      "properties": {
-        "appId": "[parameters('blobshipAppId')]"
-      }
-    },
-    "grant": {
+  "resources": [
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('blobship-grant-{0}', variables('storageAccountName'))]",
@@ -64,7 +56,7 @@
             "value": "[parameters('blobshipAppId')]"
           },
           "blobshipPrincipalId": {
-            "value": "[reference('blobshipSp').id]"
+            "value": "[parameters('blobshipPrincipalId')]"
           },
           "storageAccountName": {
             "value": "[variables('storageAccountName')]"
@@ -142,27 +134,10 @@
             }
           ]
         }
-      },
-      "dependsOn": [
-        "blobshipSp"
-      ]
+      }
     }
-  },
+  ],
   "outputs": {
-    "blobshipPrincipalId": {
-      "type": "string",
-      "metadata": {
-        "description": "Object id BlobShip was granted in this tenant."
-      },
-      "value": "[reference('blobshipSp').id]"
-    },
-    "tenantId": {
-      "type": "string",
-      "metadata": {
-        "description": "Tenant the grant was created in — this is the connector Tenant ID."
-      },
-      "value": "[tenant().tenantId]"
-    },
     "storageAccount": {
       "type": "string",
       "metadata": {
