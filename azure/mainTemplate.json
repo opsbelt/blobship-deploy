@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "15933607768233269168"
+      "templateHash": "6774747891678820667"
     }
   },
   "parameters": {
     "blobshipAppId": {
       "type": "string",
-      "defaultValue": "REPLACE_WITH_BLOBSHIP_APP_ID",
+      "defaultValue": "833cb164-4864-496a-985d-6bace547eacc",
       "metadata": {
         "description": "BlobShip multitenant application (client) ID. Constant — pre-filled by BlobShip; do not change."
       }

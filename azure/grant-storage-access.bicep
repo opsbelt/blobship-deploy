@@ -15,7 +15,7 @@ targetScope = 'subscription'
 extension microsoftGraph
 
 @description('BlobShip multitenant application (client) ID. Constant — pre-filled by BlobShip; do not change.')
-param blobshipAppId string = 'REPLACE_WITH_BLOBSHIP_APP_ID'
+param blobshipAppId string = '833cb164-4864-496a-985d-6bace547eacc'
 
 @description('Resource ID of the storage account to grant BlobShip scoped access to (chosen in the wizard).')
 param storageAccountResourceId string
